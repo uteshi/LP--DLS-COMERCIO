@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DLS Comércio | Excelência em Licitações</title>
     
+    <link rel="icon" type="image/svg+xml" href="LOGO DLS-favicon.svg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;600&family=Funnel+Display:wght@400;500&family=Montserrat:wght@100;300;400;600&display=swap" rel="stylesheet">
@@ -41,6 +43,81 @@
         ul { list-style: none; }
         a { text-decoration: none; }
 
+        /* =========================================
+           LOADING SCREEN (INDEPENDENTE)
+           ========================================= */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* Fundo Azul Sólido/Degradê exclusivo do Loading */
+            background: linear-gradient(135deg, #081b2b 0%, #01080c 100%);
+            z-index: 9999; /* Acima de tudo */
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+        }
+
+        .loading-screen-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .loading-content-orbital {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+        }
+
+        .orbit-system {
+            width: 220px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center;
+        }
+
+        /* Logo Central do Loading (FIXA - SEM PULO) */
+        .center-logo-loading {
+            width: 200px; height: auto; 
+            position: relative; 
+            z-index: 2;
+            /* Apenas um brilho estático elegante */
+            filter: drop-shadow(0 0 20px rgba(198, 156, 109, 0.4));
+        }
+
+        /* Trilha da Estrela */
+        .star-track {
+            position: absolute; width: 110%; height: 110%; border-radius: 60%;
+            /* 3 voltas em 4.5s */
+            animation: spinStar 4.5s cubic-bezier(0.65, 0, 0.35, 1) forwards; 
+        }
+
+        /* Estrela/Cometa */
+        .orbiting-comet {
+            position: absolute; top: 0; left: 50%; width: 10px; height: 10px;
+            background-color: var(--color-gold); border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px 5px var(--color-gold); /* Brilho */
+        }
+
+        /* Frase Final */
+        .slogan-container { margin-top: 40px; height: 40px; overflow: hidden; text-align: center; }
+        .final-slogan {
+            font-family: var(--font-title); font-weight: 100; /* Thin */
+            font-size: 1.3rem; color: var(--color-gold); letter-spacing: 2px;
+            opacity: 0; transform: translateY(30px);
+            /* Aparece aos 4s */
+            animation: textReveal 1.2s ease-out 4s forwards; 
+        }
+
+        /* Animações do Loading */
+        @keyframes spinStar {
+            0% { transform: rotate(0deg); opacity: 0; }
+            5% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: rotate(1080deg); opacity: 0; } /* 3 voltas completas */
+        }
+        @keyframes textReveal { to { opacity: 1; transform: translateY(0); } }
+
+
+        /* =========================================
+           ESTRUTURA DO SITE
+           ========================================= */
+
         /* --- 2. NAVBAR --- */
         #navbar {
             position: fixed; top: 0; width: 100%; padding: 15px 0; z-index: 1000;
@@ -61,9 +138,10 @@
         }
         .btn-contact-clean:hover { color: #FFFFFF !important; border-bottom-color: #FFFFFF; }
 
-        /* --- 3. HERO SECTION --- */
+        /* --- 3. HERO SECTION (RESTAURADA COM FUNDO PRÓPRIO) --- */
         #hero {
             height: 100vh;
+            /* Fundo escuro garantido */
             background: linear-gradient(135deg, #081b2b 0%, #01080c 100%);
             display: flex; align-items: center; color: var(--color-white); padding-top: 80px; position: relative; overflow: hidden;
         }
@@ -78,7 +156,7 @@
         }
         .btn-cta:hover { background-color: var(--color-gold); color: var(--color-blue); }
 
-        /* --- BACKGROUND SPACE --- */
+        /* ELEMENTOS DO FUNDO ESPACIAL (HERO) */
         .space-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
         .star { position: absolute; background-color: #FFFFFF; border-radius: 50%; opacity: 0; animation: twinkle infinite ease-in-out; }
         .star-sm { width: 1px; height: 1px; } .star-md { width: 2px; height: 2px; } .star-lg { width: 3px; height: 3px; }
@@ -111,20 +189,16 @@
 
         /* --- 5. ACERVO TÉCNICO --- */
         #cases { position: relative; z-index: 1; }
-        
         .sticky-wrapper { display: flex; justify-content: space-between; align-items: flex-start; position: relative; }
-        
         .watermark-sticky-container { position: sticky; top: 25vh; width: 0; height: 0; overflow: visible; z-index: 0; }
         .watermark-icon { position: absolute; left: -100px; top: -50px; width: 450px; height: 450px; opacity: 0; transform: translateY(30px) scale(0.9); transition: all 0.8s ease-out; pointer-events: none; }
         .watermark-icon.active-watermark { opacity: 0.05; transform: translateY(0) scale(1); }
-        
         .cases-text { width: 45%; padding-bottom: 100px; position: relative; border-left: 2px solid rgba(14, 47, 68, 0.1); margin-left: 50px; z-index: 2; }
         .text-trigger { min-height: 50vh; padding-left: 40px; padding-right: 20px; margin-bottom: 50px; position: relative; opacity: 0.4; transition: opacity 0.5s; }
         .text-trigger.active-text { opacity: 1; }
         .vertical-line { position: absolute; left: -2px; top: 0; width: 2px; height: 0%; background-color: var(--color-gold); transition: height 0.5s ease-out; box-shadow: 0 0 10px var(--color-gold); }
         .text-trigger.active-text .vertical-line { height: 100%; }
         .number-label { display: block; font-family: var(--font-nav); font-size: 1rem; color: var(--color-gold); margin-bottom: 10px; font-weight: 700; }
-        
         .cases-visual-container { width: 45%; height: 450px; position: sticky; top: 25vh; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .cases-visual { width: 100%; height: 100%; background: var(--color-blue); border-radius: 16px; box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.4); overflow: hidden; padding: 10px; border: 1px solid rgba(255,255,255,0.05); }
         .mindmap-svg { width: 100%; height: 100%; display: block; }
@@ -132,7 +206,6 @@
         .node-circle { fill: rgba(14, 47, 68, 0.9); stroke: var(--color-gold); stroke-width: 2; transition: all 0.3s; }
         .active-path { opacity: 0; stroke-dasharray: 200; stroke-dashoffset: 200; transition: all 0.6s ease-out; }
         .icon-shape { transition: transform 0.3s; transform-origin: 0px 0px; }
-        
         .mindmap-container.active-state-1 .node-1, .mindmap-container.active-state-2 .node-2, .mindmap-container.active-state-3 .node-3 { opacity: 1 !important; }
         .mindmap-container.active-state-1 .node-1 .node-circle, .mindmap-container.active-state-2 .node-2 .node-circle, .mindmap-container.active-state-3 .node-3 .node-circle { fill: var(--color-blue); stroke-width: 3; filter: drop-shadow(0 0 10px rgba(198, 156, 109, 0.8)); r: 40; }
         .mindmap-container.active-state-1 .node-1 .active-path, .mindmap-container.active-state-2 .node-2 .active-path, .mindmap-container.active-state-3 .node-3 .active-path { opacity: 1; stroke-dashoffset: 0; }
@@ -147,44 +220,16 @@
         .submit-btn:hover { background: #fff; }
         .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding: 20px 0; text-align: center; font-size: 0.8rem; color: #777; margin-top: 50px; }
 
-        /* --- 7. MODAL DE SUCESSO (POPUP) --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 2000; /* Acima de tudo */
-            opacity: 0; visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
+        /* --- 7. MODAL --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .modal-content {
-            background: var(--color-blue);
-            border: 2px solid var(--color-gold);
-            padding: 40px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 400px;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
+        .modal-content { background: var(--color-blue); border: 2px solid var(--color-gold); padding: 40px; border-radius: 10px; text-align: center; max-width: 400px; transform: translateY(20px); transition: transform 0.3s ease; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         .modal-overlay.active .modal-content { transform: translateY(0); }
-
         .modal-icon { font-size: 4rem; color: var(--color-gold); margin-bottom: 20px; }
         .modal-content h3 { font-family: var(--font-title); color: #fff; margin-bottom: 10px; font-size: 1.5rem; }
         .modal-content p { color: #ccc; margin-bottom: 30px; font-family: var(--font-body); }
-        
-        .close-modal-btn {
-            background: transparent; border: 1px solid #fff; color: #fff;
-            padding: 10px 30px; cursor: pointer; font-family: var(--font-nav);
-            text-transform: uppercase; transition: 0.3s;
-        }
+        .close-modal-btn { background: transparent; border: 1px solid #fff; color: #fff; padding: 10px 30px; cursor: pointer; font-family: var(--font-nav); text-transform: uppercase; transition: 0.3s; }
         .close-modal-btn:hover { background: var(--color-gold); border-color: var(--color-gold); color: var(--color-blue); }
-
 
         /* --- MOBILE --- */
         @media (max-width: 768px) {
@@ -204,16 +249,29 @@
             .cases-text { width: 100%; border-left: none; margin-left: 0; }
             .text-trigger { min-height: auto; margin-bottom: 80px; padding-left: 20px; border-left: 2px solid #ddd; opacity: 1; }
             .vertical-line { left: -2px; }
-            
             .watermark-sticky-container { top: 30vh; width: 100%; left: 0; height: 0; display: flex; justify-content: center; align-items: center; z-index: 0; position: sticky; }
             .watermark-icon { left: 50%; top: 0; transform: translateX(-50%) translateY(20px) scale(0.9); width: 80vw; max-width: 350px; height: auto; opacity: 0; }
             .watermark-icon.active-watermark { opacity: 0.08 !important; transform: translateX(-50%) translateY(0) scale(1) !important; }
-            
             .form-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
+
+    <div id="loading-screen">
+        <div class="loading-content-orbital">
+            <div class="orbit-system">
+                <img src="LOGO DLS-06-whitebot.svg" alt="DLS Logo" class="center-logo-loading">
+                
+                <div class="star-track">
+                    <div class="orbiting-comet"></div>
+                </div>
+            </div>
+            <div class="slogan-container">
+                <p class="final-slogan">Conectando demandas.</p>
+            </div>
+        </div>
+    </div>
 
     <nav id="navbar">
         <div class="nav-content">
@@ -399,7 +457,16 @@
     </div>
 
     <script>
-        // 1. Navbar Scroll & Mobile Menu
+        // --- LOADING SCREEN SCRIPT ---
+        window.addEventListener('load', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            // 8 Segundos
+            setTimeout(function() {
+                loadingScreen.classList.add('loading-screen-hidden');
+            }, 8000);
+        });
+
+        // Navbar & Mobile Menu
         const navbar = document.getElementById('navbar');
         const menuIcon = document.getElementById('menu-btn');
         const navLinks = document.getElementById('nav-list');
@@ -422,7 +489,7 @@
             });
         });
 
-        // 2. Reveal Animation
+        // Reveal Animation
         window.addEventListener('scroll', reveal);
         function reveal() {
             var reveals = document.querySelectorAll('.reveal');
@@ -477,50 +544,28 @@
             if(firstWM) firstWM.classList.add('active-watermark');
         });
 
-        // 4. AJAX Form Submission
+        // AJAX Form Submission
         const form = document.getElementById('dls-form');
         const modal = document.getElementById('success-modal');
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const btn = form.querySelector('button');
             const originalText = btn.innerText;
             btn.innerText = 'ENVIANDO...';
             btn.disabled = true;
 
             fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'Accept': 'application/json'
-                }
+                method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' }
             }).then(response => {
-                if (response.ok) {
-                    modal.classList.add('active'); // Abre o modal
-                    form.reset();
-                } else {
-                    alert('Ocorreu um erro ao enviar. Tente novamente.');
-                }
-            }).catch(error => {
-                console.error(error);
-                alert('Erro de conexão.');
-            }).finally(() => {
-                btn.innerText = originalText;
-                btn.disabled = false;
+                if (response.ok) { modal.classList.add('active'); form.reset(); } else { alert('Erro ao enviar.'); }
+            }).catch(error => { alert('Erro de conexão.'); }).finally(() => {
+                btn.innerText = originalText; btn.disabled = false;
             });
         });
 
-        function closeModal() {
-            modal.classList.remove('active');
-        }
-        
-        // Fechar ao clicar fora
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
+        function closeModal() { modal.classList.remove('active'); }
+        modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
     </script>
 </body>
 </html>
