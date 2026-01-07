@@ -17,7 +17,7 @@
         /* --- 1. VARIÁVEIS E RESET --- */
         :root {
             --color-blue: #0E2F44;
-            --color-gold: #cca546;
+            --color-gold: #CCA546; 
             --color-dark: #111111;
             --color-light: #F4F4F4;
             --color-white: #FFFFFF;
@@ -34,7 +34,7 @@
             font-family: var(--font-body);
             font-weight: 300;
             color: var(--color-dark);
-            background-color: var(--color-light);
+            background-color: var(--color-blue); 
             line-height: 1.6;
             overflow-x: hidden;
             scroll-behavior: smooth;
@@ -44,142 +44,90 @@
         a { text-decoration: none; }
 
         /* =========================================
-           LOADING SCREEN (INDEPENDENTE)
+           FUNDO GLOBAL FIXO (Estrelas + Globo)
            ========================================= */
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            /* Fundo Azul Sólido/Degradê exclusivo do Loading */
+        .global-space-background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #081b2b 0%, #01080c 100%);
-            z-index: 9999; /* Acima de tudo */
-            display: flex; justify-content: center; align-items: center;
-            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+            z-index: -1; pointer-events: none; overflow: hidden;
         }
+        .star { position: absolute; background-color: #FFFFFF; border-radius: 50%; opacity: 0; animation: twinkle infinite ease-in-out; }
+        .star-sm { width: 1px; height: 1px; } .star-md { width: 2px; height: 2px; } .star-lg { width: 3px; height: 3px; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.1; box-shadow: 0 0 0 transparent; } 50% { opacity: 0.8; box-shadow: 0 0 6px rgba(255,255,255,0.6); } }
+        .globe-wrapper { position: absolute; top: 50%; right: -20%; transform: translateY(-50%); width: 800px; height: 800px; z-index: 2; opacity: 0.6; mix-blend-mode: screen; }
+        .globe-tilted { width: 100%; height: 100%; transform: rotateZ(23.5deg); }
+        .globe-sphere { width: 100%; height: 100%; border-radius: 50%; position: relative; overflow: hidden; box-shadow: inset -100px -50px 200px rgba(0,0,0,0.9), inset 20px 20px 50px rgba(198, 156, 109, 0.2), 0 0 50px rgba(14, 47, 68, 0.3); }
+        .globe-map { position: absolute; top: 0; left: 0; width: 200%; height: 100%; background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/The_earth_at_night.jpg/2560px-The_earth_at_night.jpg'); background-size: 50% 100%; background-repeat: repeat-x; animation: rotateMap 60s linear infinite; filter: sepia(1) hue-rotate(195deg) saturate(1.8) brightness(0.9) contrast(1.6); }
+        @keyframes rotateMap { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-        .loading-screen-hidden {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+        /* --- METEOROS --- */
+        .meteor {
+            position: absolute; top: 0; left: 0; width: 300px; height: 1px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: rotate(-45deg); opacity: 0; z-index: 1; pointer-events: none; filter: drop-shadow(0 0 6px white);
         }
-
-        .loading-content-orbital {
-            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+        @keyframes meteorFly {
+            0% { opacity: 0; transform: rotate(-45deg) translateX(0); }
+            10% { opacity: 1; }
+            100% { opacity: 0; transform: rotate(-45deg) translateX(-1000px); }
         }
-
-        .orbit-system {
-            width: 220px; height: 220px; position: relative; display: flex; justify-content: center; align-items: center;
-        }
-
-        /* Logo Central do Loading (FIXA - SEM PULO) */
-        .center-logo-loading {
-            width: 200px; height: auto; 
-            position: relative; 
-            z-index: 2;
-            /* Apenas um brilho estático elegante */
-            filter: drop-shadow(0 0 20px rgba(198, 156, 109, 0.4));
-        }
-
-        /* Trilha da Estrela */
-        .star-track {
-            position: absolute; width: 110%; height: 110%; border-radius: 60%;
-            /* 3 voltas em 4.5s */
-            animation: spinStar 4.5s cubic-bezier(0.65, 0, 0.35, 1) forwards; 
-        }
-
-        /* Estrela/Cometa */
-        .orbiting-comet {
-            position: absolute; top: 0; left: 50%; width: 10px; height: 10px;
-            background-color: var(--color-gold); border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px 5px var(--color-gold); /* Brilho */
-        }
-
-        /* Frase Final */
-        .slogan-container { margin-top: 40px; height: 40px; overflow: hidden; text-align: center; }
-        .final-slogan {
-            font-family: var(--font-title); font-weight: 100; /* Thin */
-            font-size: 1.3rem; color: var(--color-gold); letter-spacing: 2px;
-            opacity: 0; transform: translateY(30px);
-            /* Aparece aos 4s */
-            animation: textReveal 1.2s ease-out 4s forwards; 
-        }
-
-        /* Animações do Loading */
-        @keyframes spinStar {
-            0% { transform: rotate(0deg); opacity: 0; }
-            5% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: rotate(1080deg); opacity: 0; } /* 3 voltas completas */
-        }
-        @keyframes textReveal { to { opacity: 1; transform: translateY(0); } }
-
 
         /* =========================================
-           ESTRUTURA DO SITE
+           LOADING SCREEN (SVG UPGRADE)
            ========================================= */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #081b2b 0%, #01080c 100%);
+            z-index: 9999; display: flex; justify-content: center; align-items: center;
+            transition: opacity 1.2s ease-in-out, visibility 1.2s ease-in-out;
+        }
+        .loading-screen-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .loading-content-orbital { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        .orbit-system { width: 260px; height: 260px; position: relative; display: flex; justify-content: center; align-items: center; }
+        .center-logo-loading { width: 100px; height: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; filter: drop-shadow(0 0 25px rgba(204, 165, 70, 0.3)); }
+        .loader-svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; animation: rotateBase 20s linear infinite; }
+        .orbit-arc { fill: none; stroke: var(--color-gold); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 100 400; stroke-dashoffset: 0; transform-origin: center; opacity: 0; filter: drop-shadow(0 0 8px var(--color-gold)); }
+        .arc-1 { animation: dashSpin 3.5s cubic-bezier(0.5, 0.1, 0.4, 1) infinite; }
+        .arc-2 { animation: dashSpin 4.5s cubic-bezier(0.5, 0.1, 0.4, 1) infinite; animation-delay: 0.5s; stroke-opacity: 0.7; }
+        .arc-3 { animation: dashSpin 5.5s cubic-bezier(0.5, 0.1, 0.4, 1) infinite; animation-delay: 1.0s; stroke-opacity: 0.4; }
+        .slogan-container { margin-top: 10px; height: 40px; overflow: hidden; text-align: center; }
+        .final-slogan { font-family: var(--font-title); font-weight: 100; font-size: 1.3rem; color: var(--color-gold); letter-spacing: 2px; opacity: 0; transform: translateY(30px); animation: textReveal 1.5s ease-out 3s forwards; }
+        @keyframes rotateBase { 100% { transform: rotate(360deg); } }
+        @keyframes dashSpin { 0% { stroke-dasharray: 1 400; stroke-dashoffset: 0; opacity: 0; } 10% { opacity: 1; } 50% { stroke-dasharray: 180 400; stroke-dashoffset: -100; } 100% { stroke-dasharray: 180 400; stroke-dashoffset: -600; opacity: 0; } }
+        @keyframes textReveal { to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 2. NAVBAR --- */
-        #navbar {
-            position: fixed; top: 0; width: 100%; padding: 15px 0; z-index: 1000;
-            transition: 0.4s; background: transparent; display: flex; justify-content: center;
-        }
-        #navbar.scrolled {
-            background-color: rgba(14, 47, 68, 0.98); padding: 10px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
+        /* =========================================
+           NAVBAR & HERO
+           ========================================= */
+        #navbar { position: fixed; top: -100px; width: 100%; padding: 15px 0; z-index: 1000; background: transparent; display: flex; justify-content: center; opacity: 0; transition: top 1s ease-out, opacity 1s ease-out, background-color 0.4s, padding 0.4s, box-shadow 0.4s; }
+        body.site-loaded #navbar { top: 0; opacity: 1; }
+        #navbar.scrolled { background-color: rgba(14, 47, 68, 0.98); padding: 10px 0; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
         .nav-content { display: flex; align-items: center; justify-content: center; gap: 60px; width: 100%; max-width: 1200px; position: relative; }
         .nav-logo img { height: 80px; width: auto; display: block; transition: 0.3s; }
         .menu-icon { display: none; color: var(--color-white); font-size: 1.8rem; cursor: pointer; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); }
         .nav-links { display: flex; gap: 30px; align-items: center; }
         .nav-links a { font-family: var(--font-nav); font-size: 1.1rem; color: #FFFFFF !important; transition: 0.3s; }
         .nav-links a:hover { color: var(--color-gold) !important; }
-        .btn-contact-clean {
-            color: var(--color-gold) !important; font-weight: 500; text-transform: uppercase; font-size: 0.95rem;
-            letter-spacing: 1px; margin-left: 20px; border-bottom: 1px solid var(--color-gold); padding-bottom: 2px;
-        }
+        .btn-contact-clean { color: var(--color-gold) !important; font-weight: 500; text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px; margin-left: 20px; border-bottom: 1px solid var(--color-gold); padding-bottom: 2px; }
         .btn-contact-clean:hover { color: #FFFFFF !important; border-bottom-color: #FFFFFF; }
 
-        /* --- 3. HERO SECTION (RESTAURADA COM FUNDO PRÓPRIO) --- */
-        #hero {
-            height: 100vh;
-            /* Fundo escuro garantido */
-            background: linear-gradient(135deg, #081b2b 0%, #01080c 100%);
-            display: flex; align-items: center; color: var(--color-white); padding-top: 80px; position: relative; overflow: hidden;
-        }
-        .hero-content-wrapper { position: relative; z-index: 5; width: 100%; }
+        #hero { height: 100vh; background: transparent; display: flex; align-items: center; color: var(--color-white); padding-top: 80px; position: relative; overflow: hidden; }
+        .hero-content-wrapper { position: relative; z-index: 5; width: 100%; opacity: 0; transform: translateY(40px); transition: opacity 1s ease-out 0.3s, transform 1s ease-out 0.3s; }
+        body.site-loaded .hero-content-wrapper { opacity: 1; transform: translateY(0); }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
         .hero-title { font-family: var(--font-title); font-weight: 400; font-size: 3.5rem; margin-bottom: 20px; line-height: 1.2; }
         .hero-subtitle { font-size: 1.5rem; font-weight: 100; margin-bottom: 40px; color: #dddddd; }
         .gold-text { color: var(--color-gold); }
-        .btn-cta {
-            display: inline-block; padding: 12px 35px; border: 1px solid var(--color-gold); color: var(--color-gold);
-            border-radius: 50px; font-family: var(--font-nav); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; transition: 0.3s;
-        }
+        .btn-cta { display: inline-block; padding: 12px 35px; border: 1px solid var(--color-gold); color: var(--color-gold); border-radius: 50px; font-family: var(--font-nav); text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; transition: 0.3s; }
         .btn-cta:hover { background-color: var(--color-gold); color: var(--color-blue); }
 
-        /* ELEMENTOS DO FUNDO ESPACIAL (HERO) */
-        .space-background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: hidden; }
-        .star { position: absolute; background-color: #FFFFFF; border-radius: 50%; opacity: 0; animation: twinkle infinite ease-in-out; }
-        .star-sm { width: 1px; height: 1px; } .star-md { width: 2px; height: 2px; } .star-lg { width: 3px; height: 3px; }
-        @keyframes twinkle { 0%, 100% { opacity: 0.1; box-shadow: 0 0 0 transparent; } 50% { opacity: 0.8; box-shadow: 0 0 6px rgba(255,255,255,0.6); } }
-        
-        .globe-wrapper { position: absolute; top: 50%; right: -20%; transform: translateY(-50%); width: 800px; height: 800px; z-index: 2; opacity: 0.6; mix-blend-mode: screen; }
-        .globe-tilted { width: 100%; height: 100%; transform: rotateZ(23.5deg); }
-        .globe-sphere {
-            width: 100%; height: 100%; border-radius: 50%; position: relative; overflow: hidden;
-            box-shadow: inset -100px -50px 200px rgba(0,0,0,0.9), inset 20px 20px 50px rgba(198, 156, 109, 0.2), 0 0 50px rgba(14, 47, 68, 0.3);
-        }
-        .globe-map {
-            position: absolute; top: 0; left: 0; width: 200%; height: 100%;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/The_earth_at_night.jpg/2560px-The_earth_at_night.jpg');
-            background-size: 50% 100%; background-repeat: repeat-x; animation: rotateMap 60s linear infinite;
-            filter: sepia(1) hue-rotate(195deg) saturate(1.8) brightness(0.9) contrast(1.6);
-        }
-        @keyframes rotateMap { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-        /* --- 4. SOLUÇÕES --- */
+        /* --- SEÇÕES GERAIS --- */
+        #solucoes, #cases, #compliance, #contato { position: relative; z-index: 2; }
         .section-padding { padding: 100px 0; }
         .reveal { opacity: 0; transform: translateY(30px); transition: all 1s ease; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        body.site-loaded .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Soluções */
         #solucoes { background-color: var(--color-white); }
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 60px; }
         .card { padding: 40px; border: 1px solid #eee; transition: 0.3s; }
@@ -187,8 +135,8 @@
         .card i { font-size: 2rem; color: var(--color-gold); margin-bottom: 20px; }
         .card h3 { margin-bottom: 15px; color: var(--color-blue); font-family: var(--font-title); font-weight: 600; }
 
-        /* --- 5. ACERVO TÉCNICO --- */
-        #cases { position: relative; z-index: 1; }
+        /* Acervo */
+        #cases { background-color: #F0F2F5; }
         .sticky-wrapper { display: flex; justify-content: space-between; align-items: flex-start; position: relative; }
         .watermark-sticky-container { position: sticky; top: 25vh; width: 0; height: 0; overflow: visible; z-index: 0; }
         .watermark-icon { position: absolute; left: -100px; top: -50px; width: 450px; height: 450px; opacity: 0; transform: translateY(30px) scale(0.9); transition: all 0.8s ease-out; pointer-events: none; }
@@ -210,6 +158,19 @@
         .mindmap-container.active-state-1 .node-1 .node-circle, .mindmap-container.active-state-2 .node-2 .node-circle, .mindmap-container.active-state-3 .node-3 .node-circle { fill: var(--color-blue); stroke-width: 3; filter: drop-shadow(0 0 10px rgba(198, 156, 109, 0.8)); r: 40; }
         .mindmap-container.active-state-1 .node-1 .active-path, .mindmap-container.active-state-2 .node-2 .active-path, .mindmap-container.active-state-3 .node-3 .active-path { opacity: 1; stroke-dashoffset: 0; }
         .mindmap-container.active-state-1 .node-1 .icon-shape, .mindmap-container.active-state-2 .node-2 .icon-shape, .mindmap-container.active-state-3 .node-3 .icon-shape { transform: scale(1.3); }
+
+        /* Compliance */
+        #compliance { background-color: var(--color-blue); color: #fff; position: relative; overflow: hidden; }
+        #compliance::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; opacity: 0.5; z-index: 0; }
+        .compliance-header { text-align: center; margin-bottom: 70px; position: relative; z-index: 1; }
+        .compliance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; position: relative; z-index: 1; }
+        .comp-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 40px 30px; border-radius: 8px; transition: all 0.4s ease; position: relative; overflow: hidden; }
+        .comp-card:hover { border-color: var(--color-gold); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); }
+        .comp-card::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent, rgba(198, 156, 109, 0.1), transparent); transition: 0.5s; }
+        .comp-card:hover::after { top: 100%; transition: 0.8s; }
+        .comp-icon { font-size: 2.5rem; color: var(--color-gold); margin-bottom: 20px; display: inline-block; }
+        .comp-card h3 { font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 15px; color: #fff; }
+        .comp-card p { font-size: 0.95rem; color: #ccc; line-height: 1.6; }
 
         /* --- 6. CONTATO --- */
         #contato { background-color: var(--color-dark); color: var(--color-white); position: relative; z-index: 50; }
@@ -252,7 +213,9 @@
             .watermark-sticky-container { top: 30vh; width: 100%; left: 0; height: 0; display: flex; justify-content: center; align-items: center; z-index: 0; position: sticky; }
             .watermark-icon { left: 50%; top: 0; transform: translateX(-50%) translateY(20px) scale(0.9); width: 80vw; max-width: 350px; height: auto; opacity: 0; }
             .watermark-icon.active-watermark { opacity: 0.08 !important; transform: translateX(-50%) translateY(0) scale(1) !important; }
+            
             .form-grid { grid-template-columns: 1fr; }
+            .compliance-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -261,17 +224,32 @@
     <div id="loading-screen">
         <div class="loading-content-orbital">
             <div class="orbit-system">
-                <img src="LOGO DLS-06-whitebot.svg" alt="DLS Logo" class="center-logo-loading">
+                <img src="LOGO DLS-03.svg" alt="DLS Logo" class="center-logo-loading">
                 
-                <div class="star-track">
-                    <div class="orbiting-comet"></div>
-                </div>
+                <svg class="loader-svg" viewBox="0 0 200 200">
+                    <circle class="orbit-arc arc-1" cx="100" cy="100" r="90" />
+                    <circle class="orbit-arc arc-2" cx="100" cy="100" r="90" />
+                    <circle class="orbit-arc arc-3" cx="100" cy="100" r="90" />
+                </svg>
             </div>
+            
             <div class="slogan-container">
-                <p class="final-slogan">Conectando demandas.</p>
+                <p class="final-slogan">Conectando demandas à sua produção!</p>
             </div>
         </div>
     </div>
+
+    <div class="global-space-background">
+        <div class="star star-md" style="top: 10%; left: 20%; animation-duration: 4s;"></div><div class="star star-lg" style="top: 25%; left: 75%; animation-duration: 3s;"></div><div class="star star-md" style="top: 60%; left: 15%; animation-duration: 5s;"></div><div class="star star-sm" style="top: 80%; left: 60%; animation-duration: 6s;"></div><div class="star star-md" style="top: 45%; left: 40%; animation-duration: 3.5s;"></div><div class="star star-lg" style="top: 15%; left: 90%; animation-duration: 4.5s;"></div><div class="star star-sm" style="top: 70%; left: 85%; animation-duration: 2s;"></div><div class="star star-md" style="top: 30%; left: 10%; animation-duration: 5.5s;"></div><div class="star star-sm" style="top: 5%; left: 50%; animation-duration: 7s;"></div><div class="star star-md" style="top: 90%; left: 30%; animation-duration: 4s;"></div><div class="star star-sm" style="top: 20%; left: 5%; animation-duration: 6s;"></div><div class="star star-lg" style="top: 50%; left: 80%; animation-duration: 3s;"></div><div class="star star-sm" style="top: 35%; left: 65%; animation-duration: 5s;"></div><div class="star star-md" style="top: 75%; left: 5%; animation-duration: 4s;"></div><div class="star star-sm" style="top: 15%; left: 35%; animation-duration: 6s;"></div><div class="star star-sm" style="top: 65%; left: 95%; animation-duration: 3s;"></div><div class="star star-md" style="top: 85%; left: 45%; animation-duration: 5s;"></div><div class="star star-sm" style="top: 40%; left: 25%; animation-duration: 4s;"></div><div class="star star-lg" style="top: 5%; left: 10%; animation-duration: 7s;"></div><div class="star star-sm" style="top: 55%; left: 55%; animation-duration: 3s;"></div><div class="star star-md" style="top: 95%; left: 15%; animation-duration: 6s;"></div><div class="star star-sm" style="top: 25%; left: 45%; animation-duration: 4s;"></div><div class="star star-sm" style="top: 80%; left: 75%; animation-duration: 5s;"></div><div class="star star-md" style="top: 10%; left: 60%; animation-duration: 3s;"></div><div class="star star-sm" style="top: 45%; left: 85%; animation-duration: 6s;"></div>
+        
+        <div class="globe-wrapper">
+            <div class="globe-tilted">
+                <div class="globe-sphere">
+                    <div class="globe-map"></div>
+                </div>
+            </div>
+        </div>
+        </div>
 
     <nav id="navbar">
         <div class="nav-content">
@@ -292,18 +270,6 @@
     </nav>
 
     <header id="hero">
-        <div class="space-background">
-            <div class="star star-md" style="top: 10%; left: 20%; animation-duration: 4s; animation-delay: 0s;"></div><div class="star star-lg" style="top: 25%; left: 75%; animation-duration: 3s; animation-delay: 1s;"></div><div class="star star-md" style="top: 60%; left: 15%; animation-duration: 5s; animation-delay: 2s;"></div><div class="star star-sm" style="top: 80%; left: 60%; animation-duration: 6s; animation-delay: 0.5s;"></div><div class="star star-md" style="top: 45%; left: 40%; animation-duration: 3.5s; animation-delay: 3s;"></div><div class="star star-lg" style="top: 15%; left: 90%; animation-duration: 4.5s; animation-delay: 1.5s;"></div><div class="star star-sm" style="top: 70%; left: 85%; animation-duration: 2s; animation-delay: 2.5s;"></div><div class="star star-md" style="top: 30%; left: 10%; animation-duration: 5.5s; animation-delay: 4s;"></div><div class="star star-sm" style="top: 5%; left: 50%; animation-duration: 7s; animation-delay: 1s;"></div><div class="star star-md" style="top: 90%; left: 30%; animation-duration: 4s; animation-delay: 2s;"></div><div class="star star-sm" style="top: 20%; left: 5%; animation-duration: 6s; animation-delay: 0s;"></div><div class="star star-lg" style="top: 50%; left: 80%; animation-duration: 3s; animation-delay: 3s;"></div><div class="star star-sm" style="top: 35%; left: 65%; animation-duration: 5s; animation-delay: 1s;"></div><div class="star star-md" style="top: 75%; left: 5%; animation-duration: 4s; animation-delay: 4s;"></div><div class="star star-sm" style="top: 15%; left: 35%; animation-duration: 6s; animation-delay: 2s;"></div><div class="star star-sm" style="top: 65%; left: 95%; animation-duration: 3s; animation-delay: 1s;"></div><div class="star star-md" style="top: 85%; left: 45%; animation-duration: 5s; animation-delay: 0s;"></div><div class="star star-sm" style="top: 40%; left: 25%; animation-duration: 4s; animation-delay: 3s;"></div><div class="star star-lg" style="top: 5%; left: 10%; animation-duration: 7s; animation-delay: 2s;"></div><div class="star star-sm" style="top: 55%; left: 55%; animation-duration: 3s; animation-delay: 1s;"></div><div class="star star-md" style="top: 95%; left: 15%; animation-duration: 6s; animation-delay: 4s;"></div><div class="star star-sm" style="top: 25%; left: 45%; animation-duration: 4s; animation-delay: 0s;"></div><div class="star star-sm" style="top: 80%; left: 75%; animation-duration: 5s; animation-delay: 2s;"></div><div class="star star-md" style="top: 10%; left: 60%; animation-duration: 3s; animation-delay: 1s;"></div><div class="star star-sm" style="top: 45%; left: 85%; animation-duration: 6s; animation-delay: 3s;"></div>
-            
-            <div class="globe-wrapper">
-                <div class="globe-tilted">
-                    <div class="globe-sphere">
-                        <div class="globe-map"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="container hero-content-wrapper">
             <div class="hero-content">
                 <h1 class="hero-title reveal">Excelência Técnica em <span class="gold-text">Licitações</span> e Comércio Global.</h1>
@@ -336,7 +302,7 @@
         </div>
     </section>
 
-    <section id="cases" class="section-padding" style="background-color: #F0F2F5;">
+    <section id="cases" class="section-padding">
         <div class="container">
             <h2 class="reveal" style="font-size: 2.5rem; margin-bottom: 60px; color: var(--color-blue); padding-left: 20px;">Acervo Técnico</h2>
 
@@ -377,24 +343,20 @@
                                 <line x1="300" y1="100" x2="225" y2="175" />
                                 <line x1="200" y1="300" x2="200" y2="240" />
                             </g>
-
                             <g class="center-hub" transform="translate(200, 200)">
                                 <circle cx="0" cy="0" r="35" fill="var(--color-blue)" stroke="var(--color-gold)" stroke-width="3" />
                                 <image href="logo-dls-lpg-icon.svg" x="-20" y="-20" width="40" height="40" />
                             </g>
-
                             <g class="map-node node-1" transform="translate(100, 100)">
                                 <line class="active-path" x1="0" y1="0" x2="73" y2="73" stroke="var(--color-gold)" stroke-width="4" stroke-linecap="round" />
                                 <circle class="node-circle" cx="0" cy="0" r="35" />
                                 <image class="icon-shape" href="fabrica.svg" x="-15" y="-15" width="30" height="30" />
                             </g>
-
                             <g class="map-node node-2" transform="translate(300, 100)">
                                 <line class="active-path" x1="0" y1="0" x2="-73" y2="73" stroke="var(--color-gold)" stroke-width="4" stroke-linecap="round" />
                                 <circle class="node-circle" cx="0" cy="0" r="35" />
                                 <image class="icon-shape" href="governo.svg" x="-15" y="-15" width="30" height="30" />
                             </g>
-
                             <g class="map-node node-3" transform="translate(200, 300)">
                                 <line class="active-path" x1="0" y1="0" x2="0" y2="-62" stroke="var(--color-gold)" stroke-width="4" stroke-linecap="round" />
                                 <circle class="node-circle" cx="0" cy="0" r="35" />
@@ -403,7 +365,40 @@
                         </svg>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
 
+    <section id="compliance" class="section-padding">
+        <div class="container">
+            <div class="compliance-header reveal">
+                <h2 style="font-size: 2.5rem; margin-bottom: 15px; color: #fff;">Compliance & Integridade</h2>
+                <p style="color: #ccc; max-width: 600px; margin: 0 auto;">
+                    Segurança jurídica e ética corporativa como pilares inegociáveis.
+                </p>
+            </div>
+
+            <div class="compliance-grid">
+                <div class="comp-card reveal">
+                    <i class="fas fa-shield-halved comp-icon"></i>
+                    <h3>Lei Anticorrupção</h3>
+                    <p>Aderência estrita à Lei 12.846/13 e normas internacionais (FCPA). Mantemos uma política de tolerância zero.</p>
+                </div>
+                <div class="comp-card reveal">
+                    <i class="fas fa-lock comp-icon"></i>
+                    <h3>Proteção de Dados (LGPD)</h3>
+                    <p>Infraestrutura segura e conformidade total com a Lei Geral de Proteção de Dados para parceiros e órgãos.</p>
+                </div>
+                <div class="comp-card reveal">
+                    <i class="fas fa-magnifying-glass-chart comp-icon"></i>
+                    <h3>Due Diligence 360º</h3>
+                    <p>Processo rigoroso de homologação de fornecedores globais, mitigando riscos na cadeia de suprimentos.</p>
+                </div>
+                <div class="comp-card reveal">
+                    <i class="fas fa-scale-balanced comp-icon"></i>
+                    <h3>Governança ESG</h3>
+                    <p>Compromisso com a responsabilidade ambiental, social e transparência corporativa em todas as operações.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -418,7 +413,7 @@
                         Respondemos solicitações de cotação em até 24h.<br>
                         <span style="font-style: italic; opacity: 0.5;">(Somente dias úteis)</span>
                     </p>
-                    <p><i class="fas fa-envelope gold-text"></i> dlscomercio1994@gmail.com</p>
+                    <p><i class="fas fa-envelope gold-text"></i> contato@dlscomercio.com.br</p>
                     
                     <p style="margin-top: 20px;">
                         <i class="fas fa-map-marker-alt gold-text"></i> 
@@ -426,20 +421,22 @@
                     </p>
                 </div>
                 
-                <form action="https://formsubmit.co/dlscomercio1994@gmail.com" method="POST" class="reveal" id="dls-form">
+                <form action="https://formsubmit.co/contato@dlscomercio.com.br" method="POST" class="reveal" id="dls-form">
                     <input type="hidden" name="_subject" value="Novo Contato via Site - DLS">
                     <input type="hidden" name="_captcha" value="false">
                     <input type="hidden" name="_template" value="table">
                     
                     <input type="text" name="nome" placeholder="Seu Nome" required>
                     <input type="email" name="email" placeholder="E-mail Corporativo" required>
+                    
+                    <input type="tel" name="telefone" id="phone" placeholder="WhatsApp / Celular" required>
+
                     <input type="text" name="empresa" placeholder="Empresa ou Órgão" required>
                     <textarea name="mensagem" rows="4" placeholder="Descreva sua necessidade..." required></textarea>
                     
                     <button type="submit" class="submit-btn">ENVIAR MENSAGEM</button>
                 </form>
             </div>
-            
             <div class="footer-bottom">
                 <p>&copy; 2025 DLS Comércio. Todos os direitos reservados.</p>
                 <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.6;">CNPJ: 43.431.371/0001-30</p>
@@ -457,14 +454,40 @@
     </div>
 
     <script>
-        // --- LOADING SCREEN SCRIPT ---
+        // --- LOADING SCREEN ---
         window.addEventListener('load', function() {
             const loadingScreen = document.getElementById('loading-screen');
-            // 8 Segundos
             setTimeout(function() {
                 loadingScreen.classList.add('loading-screen-hidden');
-            }, 8000);
+                document.body.classList.add('site-loaded');
+            }, 7000);
         });
+
+        // --- SISTEMA DE METEOROS ALEATÓRIOS ---
+        function createMeteor() {
+            const background = document.querySelector('.global-space-background');
+            const meteor = document.createElement('div');
+            meteor.classList.add('meteor');
+            
+            const startX = Math.random() * 120 + 20; 
+            const startY = Math.random() * 50 - 20;  
+            
+            meteor.style.left = startX + 'vw';
+            meteor.style.top = startY + 'vh';
+            
+            const scale = Math.random() * 0.5 + 0.5; 
+            const duration = Math.random() * 1 + 0.8; 
+            
+            meteor.style.transform = `rotate(-45deg) scale(${scale})`;
+            meteor.style.animationDuration = duration + 's';
+            
+            background.appendChild(meteor);
+            
+            setTimeout(() => {
+                meteor.remove();
+            }, duration * 1000);
+        }
+        setInterval(createMeteor, 2000);
 
         // Navbar & Mobile Menu
         const navbar = document.getElementById('navbar');
@@ -492,19 +515,19 @@
         // Reveal Animation
         window.addEventListener('scroll', reveal);
         function reveal() {
+            if (!document.body.classList.contains('site-loaded')) return;
             var reveals = document.querySelectorAll('.reveal');
             for (var i = 0; i < reveals.length; i++) {
                 var windowHeight = window.innerHeight;
                 var elementTop = reveals[i].getBoundingClientRect().top;
-                var elementVisible = 150;
-                if (elementTop < windowHeight - elementVisible) {
+                if (elementTop < windowHeight - 150) {
                     reveals[i].classList.add('active');
                 }
             }
         }
-        reveal();
+        setTimeout(reveal, 7500);
 
-        // 3. Sync Animation
+        // Sync Animation
         document.addEventListener("DOMContentLoaded", function() {
             const triggers = document.querySelectorAll('.text-trigger');
             const visualContainer = document.querySelector('.mindmap-container');
@@ -537,14 +560,39 @@
             const observer = new IntersectionObserver(observerCallback, options);
             triggers.forEach(trigger => observer.observe(trigger));
             
-            // Estado Inicial
             visualContainer.classList.add('active-state-1');
             if(triggers.length > 0) triggers[0].classList.add('active-text');
             const firstWM = document.querySelector('.wm-1');
             if(firstWM) firstWM.classList.add('active-watermark');
         });
 
-        // AJAX Form Submission
+        // MÁSCARA DE TELEFONE (VANILLA JS)
+        const phoneInput = document.getElementById('phone');
+        if(phoneInput){
+            phoneInput.addEventListener('input', function (e) {
+                let v = e.target.value.replace(/\D/g, ""); // Remove tudo que não é dígito
+                if (v.length > 11) v = v.substring(0, 11); // Limita a 11 dígitos
+
+                // Formatação: +55 00 9 9999-9999
+                if (v.length >= 2) {
+                    let final = "+55 " + v.substring(0, 2); // +55 DD
+                    if (v.length >= 3) {
+                        final += " " + v.substring(2, 3); // +55 DD 9
+                    }
+                    if (v.length >= 4) {
+                        final += " " + v.substring(3, 7); // +55 DD 9 MMMM
+                    }
+                    if (v.length >= 8) {
+                        final += "-" + v.substring(7); // +55 DD 9 MMMM-NNNN
+                    }
+                    e.target.value = final;
+                } else {
+                    e.target.value = v; 
+                }
+            });
+        }
+
+        // AJAX Form
         const form = document.getElementById('dls-form');
         const modal = document.getElementById('success-modal');
 
